@@ -1,18 +1,45 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import { Fragment } from 'react';
+import { useRouter } from 'next/router';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import NewsList from '../components/news/NewsList';
 import { getNews } from '../services/api/news';
-import styles from '../styles/Home.module.css';
 import { NewsType } from '../types/news.type';
 
 type HomePageProps = {
 	news: NewsType[];
 };
 
+const WrapperNavigation = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 50px;
+
+	button {
+		padding: 0.9em;
+		cursor: pointer;
+	}
+`;
+
 const Home = (props: HomePageProps) => {
-	console.log(props.news);
+	const router = useRouter();
+	const [newsData, setNewsData] = useState<NewsType[]>([]);
+	const [page, setPage] = useState<number>(1);
+
+	const onSetNewsData = useCallback(
+		(data: NewsType[]) => {
+			setNewsData(data);
+		},
+		[setNewsData]
+	);
+
+	useEffect(() => {
+		router.replace(`/?page=${page}`);
+		onSetNewsData(props.news);
+	}, [page, onSetNewsData]);
 
 	return (
 		<Fragment>
@@ -21,12 +48,25 @@ const Home = (props: HomePageProps) => {
 				<meta name="description" content="Browse and read the news" />
 			</Head>
 			<NewsList news={props.news} />
+			<WrapperNavigation>
+				<button
+					disabled={page === 1}
+					onClick={() => setPage((page) => page - 1)}
+				>
+					Prev
+				</button>
+				<button onClick={() => setPage((page) => page + 1)}>
+					Next
+				</button>
+			</WrapperNavigation>
 		</Fragment>
 	);
 };
 
-export async function getServerSideProps(context: GetServerSideProps) {
-	const result = await getNews();
+export async function getServerSideProps(context: any) {
+	const page = context.query?.page || 1;
+
+	const result = await getNews(page);
 	return {
 		props: {
 			news: result,

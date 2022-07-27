@@ -3,7 +3,7 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
-		domains: ['jid.storage.googleapis.com'],
+		domains: ['jid.storage.googleapis.com', 'internal.jurnalistika.id'],
 	},
 };
 
