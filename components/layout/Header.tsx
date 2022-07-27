@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styled from 'styled-components';
 
 const Container = styled.header`
@@ -38,13 +39,17 @@ const Navigation = styled.nav`
 const Header = () => {
 	return (
 		<Container>
-			<Title>News</Title>
+			<Title>
+				<Link href="/">
+					<a>News</a>
+				</Link>
+			</Title>
 			<Navigation>
-				<ul>
+				{/* <ul>
 					<li>Category</li>
 					<li>Category</li>
 					<li>Category</li>
-				</ul>
+				</ul> */}
 			</Navigation>
 		</Container>
 	);

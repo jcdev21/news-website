@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { NewsType } from '../../types/news.type';
 import Card from '../ui/Card';
@@ -27,12 +28,23 @@ const WrapperContent = styled.div`
 	h3.title {
 		font-size: 1.2em;
 		margin: 5px 0 10px;
+		cursor: pointer;
+
+		:hover {
+			color: #555555;
+		}
 	}
 `;
 
 const NewsItem = (props: Omit<NewsType, 'content'>) => {
 	const date = new Date(props.date).toISOString().slice(0, 19);
 	const renderDate = date.split('T').join(' ');
+
+	const router = useRouter();
+
+	function showDetail() {
+		router.push('/' + props.id);
+	}
 
 	return (
 		<Container>
@@ -49,7 +61,9 @@ const NewsItem = (props: Omit<NewsType, 'content'>) => {
 					<div>
 						<span>{renderDate}</span>
 					</div>
-					<h3 className="title">{props.title.rendered}</h3>
+					<h3 className="title" onClick={showDetail}>
+						{props.title.rendered}
+					</h3>
 					<div
 						dangerouslySetInnerHTML={{
 							__html: props.excerpt.rendered,

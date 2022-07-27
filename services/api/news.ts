@@ -21,3 +21,20 @@ export const getNews = async (page = 1, perPage = 8) => {
 		}
 	}
 };
+
+export const getDetail = async (id: number) => {
+	try {
+		const { data } = await axios.get<{ data: NewsType }>(
+			`https://internal.jurnalistika.id/wp-json/wp/v2/posts/${id}`
+		);
+		return data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			console.log('error message: ', error.message);
+			return error.message;
+		} else {
+			console.log('unexpected error: ', error);
+			return 'An unexpected error occurred';
+		}
+	}
+};
